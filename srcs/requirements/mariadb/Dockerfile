@@ -7,8 +7,10 @@ RUN apt update -y && apt upgrade -y \
 
 COPY conf/my.cnf /etc/mysql/my.cnf
 COPY tools/init.sql /docker-entrypoint-initdb.d/
+COPY tools/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 3306
 
-CMD ["sleep", "infinity"]
-#CMD ["mysql"]
+CMD ["/bin/bash", "/entrypoint.sh"] # replace CMD to ENTRYPOINT if it alowed by subject
