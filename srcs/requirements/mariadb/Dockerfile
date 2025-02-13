@@ -10,4 +10,5 @@ COPY tools/init.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
 
-CMD ["mysql"]
+CMD ["sleep", "infinity"]
+#CMD ["mysql"]
