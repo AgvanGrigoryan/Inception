@@ -8,10 +8,15 @@ down:
 
 
 CERTS_DIR = ./secrets/ssl
+CERT_FILE = $(CERTS_DIR)/nginx.crt
+CERT_KEY = $(CERTS_DIR)/nginx.key
 
-generate-certs: 
+
+generate-certs: $(CERT_FILE)
+$(CERT_FILE): $(CERT_KEY)
+$(CERT_KEY):
 	mkdir -p $(CERTS_DIR)
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-		-keyout $(CERTS_DIR)/nginx.key -out $(CERTS_DIR)/nginx.crt \
+		-keyout $(CERT_KEY) -out $(CERT_FILE) \
 		-subj "/C=AM/L=Yerevan/O=42/OU=student/CN=aggrigor.42.fr"
 	
