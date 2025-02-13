@@ -14,7 +14,7 @@ services:
       - "443:443"
     env_file:
       - .env
-    restart: on-failure;
+    restart: on-failure
       #    depends-on: wordpress
   mariadb:
     build:
@@ -35,7 +35,7 @@ services:
 secrets:
   nginx-cert:
     file: ../secrets/ssl/nginx.crt
-  nginx-cert-file:
+  nginx-cert-key:
     file: ../secrets/ssl/nginx.key
   db-root-password:
     file: ../secrets/db_root_password.txt
