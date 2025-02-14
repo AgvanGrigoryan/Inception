@@ -25,10 +25,10 @@ services:
       - db-root-password
       - db-password
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-root-password
-      MYSQL_PASSWORD_FILE: /run/secrets/db-password
-      MYSQL_DATABASE: ..
-      MYSQL_USER: ...
+      MYSQL_ROOT_PASSWORD_FILE: ${MYSQL_ROOT_PASSWORD_FILE}
+      MYSQL_PASSWORD_FILE: ${MYSQL_PASSWORD_FILE}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
     ports:
       - "3306:3306"
     volumes:

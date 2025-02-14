@@ -1,7 +1,7 @@
 FROM debian:bullseye
 
 RUN apt update -y && apt upgrade -y \
-	&& apt install -y nginx mariadb-server \
+	&& apt install -y nginx mariadb-server gettext \
 	&& apt clean \
 	&& rm -rf /var/lib/apt/lists/*
 
