@@ -13,15 +13,25 @@ fi
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mysql_install_db --user=mysql --datadir=/var/lib/mysql --basedir=/usr
 fi
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
+
+mysqld --user=mysql --skip-networking --socket=/run/mysqld/mysqld.sock &
+sleep 5
+
+until mysqladmin ping --silent; do
+	echo "Waiting for MariaDB launch..."
+	sleep 2
+done
 
 if [ -f "/docker-entrypoint-initdb.d/init.sql" ]; then
 	envsubst < /docker-entrypoint-initdb.d/init.sql > /tmp/init.sql
-	sed "s|\b$MYSQL_USER\b|'$MYSQL_USER'|g" | \
-	sed "s|\b$MYSQL_PASSWORD\b|'$MYSQL_PASSWORD'|g" | \
-	sed "s|\b$MYSQL_DATABASE\b|'$MYSQL_DATABASE'|g" > /tmp/init.sql
-	#exec env > /var/lib/mysql/con_env
-	exec cat /tmp/init.sql > /var/lib/mysql/init.sql
-	mysql < /tmp/init.sql
+	if [ -s "/tmp/init.sql" ]; then
+		mysql < /tmp/init.sql
+	else
+		echo "The init.sql script is skipped"
+	fi
 fi
-exec sleep infinity
-# exec mysqld --user=mysql
+
+#exec sleep infinity
+exec mysqld --user=mysql
