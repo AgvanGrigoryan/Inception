@@ -14,6 +14,8 @@ services:
       - "443:443"
     env_file:
       - .env
+    networks:
+      - my_network
     restart: on-failure
       #    depends-on: wordpress
   mariadb:
@@ -33,7 +35,23 @@ services:
       - "3306:3306"
     volumes:
       - /home/aggrigor/data:/var/lib/mysql
+    networks:
+      - my_network
     restart: on-failure
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+    depends_on:
+      - mariadb
+
+networks:
+  my_network:
 
 secrets:
   nginx-cert:

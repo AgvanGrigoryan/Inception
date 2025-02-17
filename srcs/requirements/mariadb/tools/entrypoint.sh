@@ -15,8 +15,10 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 fi
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
+chown -R mysql:mysql /var/lib/mysql
+chmod -R 700 /var/lib/mysql
 
-mysqld --user=mysql --skip-networking --socket=/run/mysqld/mysqld.sock &
+exec mysqld --user=mysql --socket=/run/mysqld/mysqld.sock # --skip-networking 
 sleep 5
 
 until mysqladmin ping --silent; do
@@ -32,6 +34,3 @@ if [ -f "/docker-entrypoint-initdb.d/init.sql" ]; then
 		echo "The init.sql script is skipped"
 	fi
 fi
-
-#exec sleep infinity
-exec mysqld --user=mysql
