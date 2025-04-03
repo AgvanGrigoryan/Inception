@@ -26,9 +26,9 @@ fi
 #fi
 
 # Создание пользователя по умолчанию
-#if ! wp user get $WP_DEFAULT_USER_USERNAME --path=/var/www/wordpress > /dev/null 2>&1; then
-#	echo "Создание пользователя по умолчанию..."
-#	su www-data -s /bin/bash -c "wp user create $WP_DEFAULT_USER_USERNAME $WP_DEFAULT_USER_EMAIL --role=author --user_pass=$(cat $WP_DEFAULT_USER_PASSWORD_FILE) --path=/var/www/wordpress"
-#fi
+if ! su www-data -s /bin/bash -c "wp user get $WP_DEFAULT_USER_USERNAME --path=/var/www/wordpress > /dev/null 2>&1"; then
+	echo "Создание пользователя по умолчанию..."
+	su www-data -s /bin/bash -c "wp user create $WP_DEFAULT_USER_USERNAME $WP_DEFAULT_USER_EMAIL --role=author --user_pass=$(cat $WP_DEFAULT_USER_PASSWORD_FILE) --path=/var/www/wordpress"
+fi
 
 exec php-fpm$PHP_VERSION -F
