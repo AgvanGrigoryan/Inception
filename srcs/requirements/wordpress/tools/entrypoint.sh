@@ -19,12 +19,6 @@ if ! su www-data -s /bin/bash -c "wp core is-installed --path=/var/www/wordpress
 	su www-data -s /bin/bash -c "wp core install --url=$WP_URL --title='$WP_TITLE' --admin_user=$WP_ADMIN_USERNAME --admin_email=$WP_ADMIN_EMAIL --admin_password=$(cat $WP_ADMIN_PASSWORD_FILE) --path=/var/www/wordpress"
 fi
 
-# Создание администратора
-#if ! wp user get $WP_ADMIN_USERNAME --path=/var/www/wordpress > /dev/null 2>&1; then
-#	echo "Создание администратора..."
-#	su www-data -s /bin/bash -c  "wp user create $WP_ADMIN_USERNAME $WP_ADMIN_EMAIL --role=administrator --user_pass=$(cat $WP_ADMIN_PASSWORD_FILE) --path=/var/www/wordpress"
-#fi
-
 # Создание пользователя по умолчанию
 if ! su www-data -s /bin/bash -c "wp user get $WP_DEFAULT_USER_USERNAME --path=/var/www/wordpress > /dev/null 2>&1"; then
 	echo "Создание пользователя по умолчанию..."
