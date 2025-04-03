@@ -17,12 +17,15 @@ services:
     networks:
       - my_network
     restart: on-failure
-      #    depends-on: wordpress
+    depends_on:
+      - wordpress
+
   mariadb:
     build:
       context: requirements/mariadb
       dockerfile: ./Dockerfile
     container_name: mariadb
+    restart: on-failure
     secrets:
       - db-root-password
       - db-password
@@ -34,13 +37,58 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /home/aggrigor/data:/var/lib/mysql
+      - /home/aggrigor/data/mysql/:/var/lib/mysql
     networks:
       - my_network
+
+  wordpress:
+    build:
+      context: requirements/wordpress
+      dockerfile: ./Dockerfile
+      args:
+        PHP_VERSION: "8.2"
+    container_name: wordpress
     restart: on-failure
+    secrets:
+      - db-password
+      - wp-admin-password
+      - wp-default-user-password
+    environment:
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD_FILE: ${MYSQL_PASSWORD_FILE}
+      WORDPRESS_DB_HOST: mariadb
+      WP_URL: ${WP_URL}
+      WP_TITLE: ${WP_TITLE}
+      WP_ADMIN_USERNAME: ${WP_ADMIN_USERNAME}
+      WP_ADMIN_PASSWORD_FILE: ${WP_ADMIN_PASSWORD_FILE}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_DEFAULT_USER_USERNAME: ${WP_DEFAULT_USER_USERNAME}
+      WP_DEFAULT_USER_PASSWORD_FILE: ${WP_DEFAULT_USER_PASSWORD_FILE}
+      WP_DEFAULT_USER_EMAIL: ${WP_DEFAULT_USER_EMAIL}
+    ports:
+      - "9000:9000"
+    volumes:
+      - wordpress_data:/var/www/wordpress
+        # - /home/aggrigor/WPtmpData/:/var/WPtmpData
+      # maybe I need to add one more volume
+    networks:
+      - my_network
+  redis:
+    build:
+      context: requirements/bonus/redis
+      dockerfile: ./Dockerfile
+    container_name: redis
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
 
   adminer:
-    image: adminer
+    build:
+      context: requirements/bonus/adminer
+      dockerfile: ./Dockerfile
     container_name: adminer
     restart: on-failure
     ports:
@@ -62,3 +110,15 @@ secrets:
     file: ../secrets/db_root_password.txt
   db-password:
     file: ../secrets/db_password.txt
+  wp-admin-password:
+    file: ../secrets/wp-admin-password
+  wp-default-user-password:
+    file: ../secrets/wp-default-user-password
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/aggrigor/data/wordpress
+      o: bind

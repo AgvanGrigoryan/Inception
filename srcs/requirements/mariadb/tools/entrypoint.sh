@@ -2,11 +2,11 @@ set -e
 
 # set env variables for db
 if [ -f $MYSQL_ROOT_PASSWORD_FILE ]; then
-	export MYSQL_ROOT_PASSWORD=$(cat $MYSQL_ROOT_PASSWORD_FILE)
+	export MYSQL_ROOT_PASSWORD="'$(cat $MYSQL_ROOT_PASSWORD_FILE)'"
 fi
 
 if [ -f $MYSQL_PASSWORD_FILE ]; then
-	export MYSQL_PASSWORD=$(cat $MYSQL_PASSWORD_FILE)
+	export MYSQL_PASSWORD="'$(cat $MYSQL_PASSWORD_FILE)'"
 fi
 
 # initialize the database

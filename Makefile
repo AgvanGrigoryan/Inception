@@ -1,16 +1,19 @@
-
-
-up:
-	docker-compose -f ./srcs/docker-compose.yml up -d --build 
-
-down:
-	docker-compose -f ./srcs/docker-compose.yml down 
-
+WORDPRESS_VOLUME_DIR=/home/aggrigor/data/wordpress
 
 CERTS_DIR = ./secrets/ssl
 CERT_FILE = $(CERTS_DIR)/nginx.crt
 CERT_KEY = $(CERTS_DIR)/nginx.key
 
+all:  up
+
+setup:
+	mkdir -p $(WORDPRESS_VOLUME_DIR)
+
+up: setup generate-certs
+	docker-compose -f ./srcs/docker-compose.yml up -d --build 
+
+down:
+	docker-compose -f ./srcs/docker-compose.yml down 
 
 generate-certs: $(CERT_FILE)
 $(CERT_FILE): $(CERT_KEY)
