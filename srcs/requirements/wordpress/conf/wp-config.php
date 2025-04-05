@@ -1,4 +1,8 @@
 <?php
+
+define( 'WP_DEBUG_LOG', true);
+define( 'WP_DEBUG_DISPLAY', false);
+
 # redis setup
 define('WP_REDIS_HOST', 'redis');
 define('WP_REDIS_PORT', '6379');
@@ -15,8 +19,8 @@ define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
 define ('CONCATENATE_SCRIPTS', false);
-define('WP_HOME', 'https://aggrigor.42.fr');
-define('WP_SITEURL', 'https://aggrigor.42.fr');
+define('WP_HOME', $_SERVER['WP_URL']);
+define('WP_SITEURL', $_SERVER['WP_URL']);
 
 $table_prefix = 'wp_';
 define('WP_DEBUG', false);
