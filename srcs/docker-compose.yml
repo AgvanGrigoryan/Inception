@@ -71,8 +71,6 @@ services:
       - "9000:9000"
     volumes:
       - wordpress_data:/var/www/wordpress
-        # - /home/aggrigor/WPtmpData/:/var/WPtmpData
-      # maybe I need to add one more volume
     networks:
       - my_network
     depends_on:
@@ -110,6 +108,25 @@ services:
     restart: on-failure
     networks:
       - my_network
+  
+  ftp:
+    build:
+      context: requirements/bonus/ftp
+      dockerfile: ./Dockerfile
+    container_name: ftp
+      #restart: on-failure
+    secrets:
+      - ftp-password
+    environment:
+      FTP_USER: ${FTP_USER}
+      FTP_PASSWORD_FILE: ${FTP_PASSWORD_FILE}
+    volumes:
+      - wordpress_data:/var/www/wordpress_data
+    ports:
+      - "21:21"
+      - "10000-10100:10000-10100"
+    networks:
+      - my_network
 
 networks:
   my_network:
@@ -127,6 +144,8 @@ secrets:
     file: ../secrets/wp-admin-password
   wp-default-user-password:
     file: ../secrets/wp-default-user-password
+  ftp-password:
+    file: ../secrets/ftp-password
 
 volumes:
   wordpress_data:
@@ -134,4 +153,11 @@ volumes:
     driver_opts:
       type: none
       device: /home/aggrigor/data/wordpress
+      o: bind
+
+  ftp_logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/aggrigor/data/ftp
       o: bind
