@@ -15,6 +15,8 @@ up: setup generate-certs
 down:
 	docker-compose -f ./srcs/docker-compose.yml down 
 
+re: down up
+
 generate-certs: $(CERT_FILE)
 $(CERT_FILE): $(CERT_KEY)
 $(CERT_KEY):

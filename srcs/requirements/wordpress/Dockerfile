@@ -54,6 +54,7 @@ RUN wget -O /tmp/wordpress.tar.gz https://wordpress.org/latest.tar.gz && \
 RUN echo "variables_order = \"EGPCS\"" >> /etc/php/${PHP_VERSION}/cli/php.ini
 
 RUN chown -R www-data:www-data /var/www/wordpress
+RUN chmod -R 755 /var/www/wordpress
 
 EXPOSE 9000
 
