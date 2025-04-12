@@ -116,7 +116,7 @@ services:
       context: requirements/bonus/ftp
       dockerfile: ./Dockerfile
     container_name: ftp
-      #restart: on-failure
+    restart: on-failure
     secrets:
       - ftp-password
     environment:
@@ -129,6 +129,23 @@ services:
       - "10000-10100:10000-10100"
     networks:
       - my_network
+
+  cadvisor:
+    build:
+      context: requirements/bonus/cadvisor
+      dockerfile: ./Dockerfile
+    container_name: cadvisor
+    restart: on-failure
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro 
+      - /sys:/sys:ro 
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "2468:2468"
+    networks:
+      - my_network
+
 
 networks:
   my_network:
