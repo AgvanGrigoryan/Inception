@@ -6,6 +6,7 @@ services:
       context: requirements/nginx
       dockerfile: ./Dockerfile
     container_name: nginx
+    image: nginx
     secrets:
       - nginx-cert
       - nginx-cert-key
@@ -28,6 +29,7 @@ services:
       context: requirements/mariadb
       dockerfile: ./Dockerfile
     container_name: mariadb
+    image: mariadb
     restart: on-failure
     secrets:
       - db-root-password
@@ -40,9 +42,14 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /home/aggrigor/data/mysql/:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     networks:
       - my_network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   wordpress:
     build:
@@ -51,6 +58,7 @@ services:
       args:
         PHP_VERSION: "8.2"
     container_name: wordpress
+    image: wordpress
     restart: on-failure
     secrets:
       - db-password
@@ -76,13 +84,15 @@ services:
     networks:
       - my_network
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
 
   redis:
     build:
       context: requirements/bonus/redis
       dockerfile: ./Dockerfile
     container_name: redis
+    image: redis
     restart: on-failure
     ports:
       - "6379:6379"
@@ -94,6 +104,7 @@ services:
       context: requirements/bonus/adminer
       dockerfile: ./Dockerfile
     container_name: adminer
+    image: adminer
     restart: on-failure
     ports:
       - "8080:8080"
@@ -107,6 +118,7 @@ services:
       context: requirements/bonus/static-site
       dockerfile: ./Dockerfile
     container_name: static-site
+    image: static-site
     restart: on-failure
     networks:
       - my_network
@@ -116,6 +128,7 @@ services:
       context: requirements/bonus/ftp
       dockerfile: ./Dockerfile
     container_name: ftp
+    image: ftp
     restart: on-failure
     secrets:
       - ftp-password
@@ -135,6 +148,7 @@ services:
       context: requirements/bonus/cadvisor
       dockerfile: ./Dockerfile
     container_name: cadvisor
+    image: cadvisor
     restart: on-failure
     volumes:
       - /:/rootfs:ro
@@ -174,9 +188,9 @@ volumes:
       device: /home/aggrigor/data/wordpress
       o: bind
 
-  ftp_logs:
+  mariadb:
     driver: local
     driver_opts:
       type: none
-      device: /home/aggrigor/data/ftp
+      device: /home/aggrigor/data/mysql
       o: bind

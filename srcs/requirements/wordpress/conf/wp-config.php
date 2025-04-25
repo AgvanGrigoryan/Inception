@@ -1,5 +1,18 @@
 <?php
 
+if (
+	isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+	$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
+) {
+	$_SERVER['HTTPS'] = 'on';
+}
+$_SERVER['HTTP_HOST'] = 'aggrigor.42.fr';
+define('FORCE_SSL_ADMIN', true);
+define('COOKIE_DOMAIN', $_SERVER['HTTP_HOST']);
+define('COOKIEPATH', '/');
+define('SITECOOKIEPATH', '/');
+
+
 define( 'WP_DEBUG_LOG', true);
 define( 'WP_DEBUG_DISPLAY', false);
 
