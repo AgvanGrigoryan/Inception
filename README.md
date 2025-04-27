@@ -39,7 +39,7 @@ Everything is lightweight, persistent, and reproducible.
 
 3. Build and launch the containers:
    ```bash
-   docker-compose up --build
+   make up
    ```
 
 ---
